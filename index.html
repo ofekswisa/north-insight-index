@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>אינדקס המערכת · North.Insight</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: #ffffff;
+    color: #1b2b3a;
+    font-family: 'Assistant', 'Segoe UI', 'Arial Hebrew', Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    /* אין 100vh — בתוך iframe הגובה נקבע על ידי הווידג'ט */
+    min-height: 100%;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; }
+  *:focus-visible { outline: 2px solid #2aa79b; outline-offset: 2px; }
+
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── כותרת עליונה ── */
+  .topbar { background: #ffffff; border-bottom: 1px solid #d7dee5; }
+  .brand { direction: ltr; unicode-bidi: isolate; padding: 14px 0 12px; }
+  .brand-name { font-size: 15px; font-weight: 700; letter-spacing: 0.04em; color: #123a5f; }
+  .brand-name .dot { color: #e8763a; }
+  .brand-name .insight { color: #21c5d6; }
+  .brand-sub { font-size: 8.5px; font-weight: 400; letter-spacing: 0.16em; color: #6b7d8d; margin-top: 2px; }
+
+  /* ── פתיח ── */
+  .intro { padding: 32px 0 22px; max-width: 70ch; }
+  .intro h1 { margin: 0 0 10px; font-size: 28px; line-height: 1.2; font-weight: 700; color: #123a5f; }
+  .intro p { margin: 0; font-size: 16.5px; line-height: 1.65; color: #43596e; text-wrap: pretty; }
+
+  /* ── סרגל חיפוש דביק ── */
+  .toolbar {
+    position: sticky; top: 0; z-index: 5; background: #ffffff;
+    padding: 12px 0; border-bottom: 1px solid #dde3e9; margin-bottom: 24px;
+  }
+  .toolbar-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .search {
+    display: flex; align-items: center; gap: 10px; background: #ffffff;
+    border: 1px solid #c9d3db; padding: 0 14px; min-width: 260px; flex: 0 1 340px;
+  }
+  .search span { color: #8fa0ae; font-size: 15px; }
+  .search input {
+    border: 0; padding: 10px 0; font-size: 15px; font-family: inherit;
+    width: 100%; background: transparent; color: #1b2b3a;
+  }
+  .search input::placeholder { color: #9aa7b3; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    font-size: 13.5px; padding: 7px 13px; cursor: pointer;
+    border: 1px solid #c9d3db; background: #ffffff; color: #4d6377; transition: all 120ms;
+  }
+  .chip:hover { border-color: #123a5f; }
+  .chip[aria-pressed="true"] { border-color: #123a5f; background: #123a5f; color: #ffffff; }
+  .count { margin-inline-start: auto; font-size: 13.5px; color: #6b7d8d; white-space: nowrap; }
+
+  /* ── קבוצות ופריטים ── */
+  .group { margin-bottom: 30px; background: #ffffff; border: 1px solid #d7dee5; }
+  .group-head {
+    display: flex; align-items: baseline; gap: 12px;
+    padding: 16px 22px 14px; border-bottom: 1px solid #e4eaef;
+  }
+  .group-bar { width: 4px; align-self: stretch; background: #123a5f; flex: none; }
+  .group-head h2 { margin: 0; font-size: 21px; font-weight: 700; color: #123a5f; }
+  .group-count { font-size: 13px; color: #2aa79b; font-weight: 600; white-space: nowrap; }
+  .group-tab { margin-inline-start: auto; font-size: 13.5px; color: #8595a3; white-space: nowrap; }
+  a.group-tab:hover { color: #2aa79b; text-decoration: underline; }
+
+  .items { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+  .item {
+    display: block; padding: 18px 22px 20px; border-bottom: 1px solid #edf1f5;
+    transition: background 120ms; position: relative;
+  }
+  .item.dense { padding: 13px 22px; }
+  a.item { cursor: pointer; }
+  a.item:hover, a.item:focus-visible { background: #f5fafb; }
+  a.item:hover .item-title { color: #2aa79b; }
+  .item-head { display: flex; align-items: baseline; gap: 9px; margin-bottom: 6px; }
+  .bullet { width: 7px; height: 7px; background: #2aa79b; flex: none; transform: translateY(-2px); }
+  .item-title { margin: 0; font-size: 16.5px; font-weight: 700; color: #17466f; line-height: 1.3; flex: 1; }
+  .go {
+    flex: none; font-size: 13px; color: #b6c2cc; transition: color 120ms;
+    transform: scaleX(-1); /* חץ שמצביע לכיוון הקריאה בעברית */
+  }
+  a.item:hover .go, a.item:focus-visible .go { color: #2aa79b; }
+  .item-detail {
+    margin: 0; margin-inline-start: 16px; font-size: 14.5px; line-height: 1.6;
+    color: #4d6377; text-wrap: pretty;
+  }
+
+  .empty {
+    background: #ffffff; border: 1px solid #d7dee5; padding: 44px 24px;
+    text-align: center; color: #6b7d8d; font-size: 16px;
+  }
+
+  .foot {
+    margin-top: 32px; padding: 16px 0 40px; border-top: 1px solid #dde3e9;
+    display: flex; justify-content: space-between; gap: 24px;
+    font-size: 13px; color: #8595a3; flex-wrap: wrap;
+  }
+
+  /* התראת הגדרה — נעלמת מאליה ברגע ש-experienceBase מוגדר */
+  .setup {
+    background: #fff8e6; border: 1px solid #e8cd8a; color: #7a5a12;
+    padding: 10px 16px; font-size: 13.5px; margin: 12px 0 0; line-height: 1.6;
+  }
+  .setup code { font-family: ui-monospace, Consolas, monospace; background: #f7ecd2; padding: 1px 5px; }
+
+  @media (max-width: 560px) {
+    .wrap { padding: 0 16px; }
+    .intro { padding: 24px 0 18px; }
+    .intro h1 { font-size: 24px; }
+    .group-head { flex-wrap: wrap; }
+    .group-tab { margin-inline-start: 0; width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   ⚙️  אזור הגדרות — זה החלק היחיד שצריך לערוך
+   ═══════════════════════════════════════════════════════════════════════════ */
+var CONFIG = {
+
+  // 1) כתובת הבסיס של האפליקציה ב-Experience Builder, ללא / בסוף.
+  //    דוגמה:  'https://experience.arcgis.com/experience/1a2b3c4d5e6f7g8h9i0j'
+  //    אם האפליקציה מתארחת אצלכם (S3/CloudFront), למשל:
+  //            'https://app.example.co.il/north-insight'
+  experienceBase: 'https://experience.arcgis.com/experience/PUT-EXPERIENCE-ID-HERE',
+
+  // 2) תבנית הקישור לעמוד. {base} ו-{page} מוחלפים אוטומטית.
+  //    ברירת המחדל מתאימה לאפליקציה מפורסמת ב-ExB:  .../page/<שם-העמוד>/
+  //    אם האפליקציה שלכם משתמשת בפרמטר שאילתה, החליפו ל: '{base}/?page={page}'
+  pageUrlTemplate: '{base}/page/{page}/',
+
+  // 3) יעד הניווט:
+  //    '_top'   = כל האפליקציה עוברת לעמוד (מומלץ בתוך ווידג'ט Embed)
+  //    '_blank' = פתיחה בטאב חדש
+  linkTarget: '_top',
+
+  // 4) צפיפות התצוגה: 'comfortable' או 'compact'
+  density: 'comfortable',
+
+  // 5) הצגת בלוק הפתיח בראש הדף
+  showIntro: true
+};
+
+/* ───────────────────────────────────────────────────────────────────────────
+   תוכן האינדקס.
+   לכל תחום:  page = שם/מזהה העמוד ב-Experience Builder (כפי שמופיע ב-URL).
+              tab  = הטקסט שמוצג למשתמש בצד הכותרת.
+   לכל פריט אפשר להוסיף (לא חובה):
+              page: 'OTHER-PAGE'          — לעקוף את העמוד של התחום
+              url:  'https://...'         — קישור מוחלט (דשבורד/מפה) במקום עמוד
+
+   סדר התחומים כאן הוא סדר התצוגה בדף — כדי לשנות, הזיזו בלוק שלם.
+   ─────────────────────────────────────────────────────────────────────────── */
+var TOPICS = [
+  { id: 't1', name: 'תעשייה', tab: 'טאב תעשייה', page: 'PAGE-INDUSTRY', items: [
+    { id: 'i1',  title: 'חברות טק והאבים', detail: 'מיפוי חברות טכנולוגיות לפי תחום פעילות, ותק ומספר עובדים, וכן האבים — חללי עבודה משותפים — באשכול.' },
+    { id: 'i2',  title: 'מפעלים ונותני שירות', detail: 'מיפוי מפעלים ונותני שירות לתעשייה באשכול, לפי יישוב, ענף פעילות, ותק ועוד.' },
+    { id: 'i3',  title: 'דשבורד אזורי תעשייה', detail: 'כלי לתשאול ייעודי קרקע, שייכות וסטטוס (פנוי/בנוי) באזורי התעשייה באשכול.' },
+    { id: 'i21', title: 'ייבואני מזון ויצרני מזון מאושרים', detail: 'מיפוי ייבואני מזון ויצרני מזון המאושרים על ידי משרד הבריאות.' }
+  ]},
+  { id: 't3', name: 'חקלאות', tab: 'טאב חקלאות', page: 'PAGE-AGRICULTURE', items: [
+    { id: 'i7', title: 'נתוני חקלאות', detail: 'חלקות חקלאיות, חוות חקלאיות, תיירות חקלאית, מבני בע"ח, נתוני סביבה ושטחים פתוחים, קרקע ומסלע ואגרו-PV.' },
+    { id: 'i8', title: 'דשבורד חקלאות', detail: 'כלי לתשאול חלקות חקלאיות לפי סקר קרקע, מחקר פעיל בחלקה, סוג גידול, שייכות מוניציפלית, קרבה לחלקות PV מאושרות וגודל חלקה.' },
+    { id: 'i9', title: 'מקרי כלבת', detail: 'נתוני מקרי כלבת ממשרד החקלאות לפי רשות.' }
+  ]},
+  { id: 't2', name: 'הון אנושי ופיתוח כלכלי', tab: 'טאב תעשייה / חברה', page: 'PAGE-INDUSTRY', items: [
+    { id: 'i4', title: 'שכר ממוצע ומועסקים', detail: 'נתוני שכר ממוצע ומספר מועסקים לפי רשות וענף כלכלי.' },
+    { id: 'i5', title: 'סקר טאלנטים — מרכז הידע', detail: 'דוח סקר מרכז הידע על ההון האנושי באזור.' },
+    { id: 'i6', title: 'קרנות וארגוני פיתוח כלכלי', detail: 'מיפוי קרנות וארגונים העוסקים בפיתוח כלכלי בגליל המזרחי.' }
+  ]},
+  { id: 't4', name: 'תכנון ותשתיות', tab: 'טאב תכנון', page: 'PAGE-PLANNING', items: [
+    { id: 'i10', title: 'ייעודי קרקע', detail: 'מפה המאפשרת סינון לפי ייעוד קרקע על פי רמ"י ולפי יישוב או רשות.' },
+    { id: 'i11', title: 'אנטנות סלולריות וסיבים אופטיים', detail: 'פריסת אנטנות סלולריות ותשתית סיבים אופטיים בישראל.' }
+  ]},
+  { id: 't5', name: 'סביבה', tab: 'טאב סביבה', page: 'PAGE-ENVIRONMENT', items: [
+    { id: 'i12', title: 'נתוני סביבה ושטחים פתוחים', detail: 'שטחי שריפות ביערות, חלקות בעיבוד משמר, מבני בע"ח, שמורות יער, חטיבות נוף, קרקע ומסלע, סקר טבע עירוני, תצורת צומח ושימושי קרקע.' }
+  ]},
+  { id: 't6', name: 'קהילה וחברה', tab: 'טאבים קהילה · חברה · חינוך והשכלה', page: 'PAGE-COMMUNITY', items: [
+    { id: 'i13', title: 'תרבות', detail: 'מיפוי מוסדות תרבות, ארגונים ואירועים בגליל המזרחי.' },
+    { id: 'i14', title: 'ארגוני צעירים', detail: 'מיפוי ארגונים הפועלים בתחום הצעירים.' },
+    { id: 'i15', title: 'שירותי בריאות', detail: 'נתוני שירותי בריאות המסופקים על ידי קופות החולים. מאפשר תשאול לפי סוג שירות, נגישות, שפת שירות והתמחות.' },
+    { id: 'i16', title: 'נתוני רווחה', detail: 'מקבלי קצבאות מהביטוח הלאומי לפי סוג קצבה ולפי רשות.' },
+    { id: 'i17', title: 'נתונים דמוגרפיים', detail: 'נתונים דמוגרפיים ברמת הרשות או היישוב: גילאים, סוג התיישבות, חרדים, עולים, מאזן הגירה, מדד סוציו-אקונומי, צפיפות ועוד.' },
+    { id: 'i18', title: 'השכלה גבוהה', detail: 'מקבלי תארים לפי סוג תואר ברמת הרשות.', page: 'PAGE-EDUCATION' },
+    { id: 'i19', title: 'בגרויות', detail: 'ממוצע בגרויות וזכאים לתעודת בגרות לפי רשות, מוסד ומקצוע.', page: 'PAGE-EDUCATION' }
+  ]},
+  { id: 't7', name: 'תיירות', tab: 'טאב תיירות', page: 'PAGE-TOURISM', items: [
+    { id: 'i20', title: 'תיירות חקלאית', detail: 'נתוני תיירות חקלאית באשכול.' }
+  ]}
+];
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   מכאן והלאה — לוגיקה. אין צורך לערוך.
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  var PLACEHOLDER = /PUT-EXPERIENCE-ID-HERE/;
+  var app = document.getElementById('app');
+  var state = { query: '', topic: null };
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  /* בונה את כתובת היעד לפריט. מחזיר null אם אין עמוד מוגדר. */
+  function urlFor(topic, item) {
+    if (item && item.url) return item.url;
+    var page = (item && item.page) || topic.page;
+    var base = String(CONFIG.experienceBase || '').replace(/\/+$/, '');
+    if (!page || !base) return null;
+    return CONFIG.pageUrlTemplate
+      .replace('{base}', base)
+      .replace('{page}', encodeURIComponent(page));
+  }
+
+  /* חיפוש: התאמה בכותרת, בתיאור או בשם התחום. */
+  function norm(s) { return String(s).toLowerCase(); }
+  function matches(topic, item, q) {
+    if (!q) return true;
+    return norm(item.title + ' ' + item.detail + ' ' + topic.name).indexOf(q) !== -1;
+  }
+
+  function visibleGroups() {
+    var q = norm(state.query.trim());
+    var out = [];
+    for (var i = 0; i < TOPICS.length; i++) {
+      var t = TOPICS[i];
+      if (state.topic && t.name !== state.topic) continue;
+      var topicHit = q && norm(t.name).indexOf(q) !== -1;
+      var items = topicHit ? t.items.slice() : t.items.filter(function (it) { return matches(t, it, q); });
+      if (items.length) out.push({ topic: t, items: items });
+    }
+    return out;
+  }
+
+  function itemHtml(topic, item) {
+    var href = urlFor(topic, item);
+    var dense = CONFIG.density === 'compact' ? ' dense' : '';
+    var inner =
+      '<div class="item-head">' +
+        '<div class="bullet"></div>' +
+        '<h3 class="item-title">' + esc(item.title) + '</h3>' +
+        (href ? '<div class="go" aria-hidden="true">➜</div>' : '') +
+      '</div>' +
+      '<div class="item-detail">' + esc(item.detail) + '</div>';
+
+    if (!href) return '<div class="item' + dense + '">' + inner + '</div>';
+
+    var target = item.url ? '_blank' : CONFIG.linkTarget;
+    var rel = target === '_blank' ? ' rel="noopener noreferrer"' : '';
+    return '<a class="item' + dense + '" href="' + esc(href) + '" target="' + esc(target) + '"' + rel +
+           ' title="מעבר אל: ' + esc(topic.tab) + '">' + inner + '</a>';
+  }
+
+  function groupHtml(g) {
+    var href = urlFor(g.topic, null);
+    var tabHtml = href
+      ? '<a class="group-tab" href="' + esc(href) + '" target="' + esc(CONFIG.linkTarget) + '">' + esc(g.topic.tab) + ' ➜</a>'
+      : '<div class="group-tab">' + esc(g.topic.tab) + '</div>';
+
+    return '<section class="group">' +
+      '<div class="group-head">' +
+        '<div class="group-bar"></div>' +
+        '<h2>' + esc(g.topic.name) + '</h2>' +
+        '<div class="group-count">' + g.items.length + (g.items.length === 1 ? ' פריט' : ' פריטים') + '</div>' +
+        tabHtml +
+      '</div>' +
+      '<div class="items">' + g.items.map(function (it) { return itemHtml(g.topic, it); }).join('') + '</div>' +
+    '</section>';
+  }
+
+  function render() {
+    var groups = visibleGroups();
+    var shown = groups.reduce(function (n, g) { return n + g.items.length; }, 0);
+    var all = TOPICS.reduce(function (n, t) { return n + t.items.length; }, 0);
+    var filtered = state.query.trim() || state.topic;
+    var countLabel = filtered
+      ? shown + ' מתוך ' + all + ' פריטים'
+      : all + ' פריטים ב־' + TOPICS.length + ' תחומי תוכן';
+
+    var chips = [{ label: 'כל התחומים', value: null }]
+      .concat(TOPICS.map(function (t) { return { label: t.name, value: t.name }; }))
+      .map(function (c) {
+        var active = state.topic === c.value;
+        return '<button class="chip" type="button" aria-pressed="' + active + '" data-topic="' +
+               esc(c.value === null ? '' : c.value) + '">' + esc(c.label) + '</button>';
+      }).join('');
+
+    var setup = PLACEHOLDER.test(CONFIG.experienceBase)
+      ? '<div class="setup"><strong>הקישורים עדיין לא מוגדרים.</strong> ' +
+        'ערכו את <code>CONFIG.experienceBase</code> ואת שדה <code>page</code> של כל תחום ' +
+        'בראש קובץ ה-HTML, כדי שהלחיצה על פריט תעביר לעמוד המתאים באפליקציה.</div>'
+      : '';
+
+    app.innerHTML =
+      '<header class="topbar"><div class="wrap"><div class="brand">' +
+        '<div class="brand-name">NORTH<span class="dot">.</span><span class="insight">INSIGHT</span>' +
+        '<div class="brand-sub">DATA DRIVEN DECISION</div></div>' +
+      '</div></div></header>' +
+      '<div class="wrap">' +
+        (CONFIG.showIntro
+          ? '<div class="intro"><h1>אינדקס המערכת</h1>' +
+            '<p>מערכת North.Insight מרכזת בתוכה מפות, דשבורדים ודוחות במגוון תחומי תוכן. ' +
+            'דף זה מהווה מבט על עיקרי הנתונים אשר יושבים במערכת — לחיצה על פריט תעביר אתכם לטאב המתאים.</p>' +
+            setup + '</div>'
+          : setup) +
+        '<div class="toolbar"><div class="toolbar-row">' +
+          '<div class="search"><span aria-hidden="true">⌕</span>' +
+            '<input id="q" type="search" value="' + esc(state.query) + '" ' +
+            'placeholder="חיפוש באינדקס — נושא, שכבה או סוג נתון" aria-label="חיפוש באינדקס">' +
+          '</div>' +
+          '<div class="chips" id="chips">' + chips + '</div>' +
+          '<div class="count">' + esc(countLabel) + '</div>' +
+        '</div></div>' +
+        (groups.length
+          ? groups.map(groupHtml).join('')
+          : '<div class="empty">לא נמצאו פריטים תואמים. נסו מונח אחר או נקו את הסינון.</div>') +
+        '<div class="foot">' +
+          '<div>אשכול גליל מזרחי · אינדקס תכולת המערכת</div>' +
+          '<div>האינדקס מתעדכן עם הוספת שכבות ודשבורדים חדשים</div>' +
+        '</div>' +
+      '</div>';
+
+    var q = document.getElementById('q');
+    q.addEventListener('input', function (e) {
+      state.query = e.target.value;
+      var pos = e.target.selectionStart;
+      render();
+      var nq = document.getElementById('q');
+      nq.focus();
+      try { nq.setSelectionRange(pos, pos); } catch (err) {}
+    });
+
+    document.getElementById('chips').addEventListener('click', function (e) {
+      var btn = e.target.closest('.chip');
+      if (!btn) return;
+      var val = btn.getAttribute('data-topic') || null;
+      state.topic = (state.topic === val) ? null : val;
+      render();
+    });
+  }
+
+  /* גיבוי לניווט: אם ה-iframe חסום מלנווט את החלון העליון (sandbox ללא
+     allow-top-navigation), target="_top" פשוט לא יעשה דבר. אם הניווט מצליח
+     ה-iframe נהרס והטיימר לא ירוץ כלל — כך שההגעה לכאן פירושה שהניווט נחסם. */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a.item, a.group-tab');
+    if (!a || a.target !== '_top') return;
+    var before = null;
+    try { before = window.top.location.href; } catch (err) { /* cross-origin — נמשיך רגיל */ return; }
+    setTimeout(function () {
+      try {
+        if (window.top.location.href === before) window.open(a.href, '_blank', 'noopener');
+      } catch (err) {}
+    }, 1000);
+  }, true);
+
+  render();
+})();
+</script>
+
+</body>
+</html>
