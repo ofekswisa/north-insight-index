@@ -17,7 +17,7 @@
     font-family: 'Assistant', 'Segoe UI', 'Arial Hebrew', Arial, sans-serif;
     font-size: 15px;
     line-height: 1.5;
-    /* אין 100vh — בתוך iframe הגובה נקבע על ידי הווידג'ט */
+    /* אין 100vh - בתוך iframe הגובה נקבע על ידי הווידג'ט */
     min-height: 100%;
     overflow-x: hidden;
   }
@@ -74,7 +74,7 @@
   .group-bar { width: 4px; align-self: stretch; background: #123a5f; flex: none; }
   .group-head h2 { margin: 0; font-size: 21px; font-weight: 700; color: #123a5f; }
   .group-count { font-size: 13px; color: #2aa79b; font-weight: 600; white-space: nowrap; }
-  /* כפתור המעבר לעמוד — הקישור היחיד בכרטיס, בפינה השמאלית העליונה */
+  /* כפתור המעבר לעמוד - הקישור היחיד בכרטיס, בפינה השמאלית העליונה */
   .page-btn {
     margin-inline-start: auto; align-self: center;
     display: inline-flex; align-items: center; gap: 8px;
@@ -108,7 +108,7 @@
     font-size: 13px; color: #8595a3; flex-wrap: wrap;
   }
 
-  /* התראת הגדרה — נעלמת מאליה ברגע ש-experienceBase מוגדר */
+  /* התראת הגדרה - נעלמת מאליה ברגע ש-experienceBase מוגדר */
   .setup {
     background: #fff8e6; border: 1px solid #e8cd8a; color: #7a5a12;
     padding: 10px 16px; font-size: 13.5px; margin: 12px 0 0; line-height: 1.6;
@@ -130,7 +130,7 @@
 
 <script>
 /* ═══════════════════════════════════════════════════════════════════════════
-   ⚙️  אזור הגדרות — זה החלק היחיד שצריך לערוך
+   ⚙️  אזור הגדרות - זה החלק היחיד שצריך לערוך
    ═══════════════════════════════════════════════════════════════════════════ */
 var CONFIG = {
 
@@ -162,13 +162,13 @@ var CONFIG = {
    לכל תחום:  page = שם/מזהה העמוד ב-Experience Builder (כפי שמופיע ב-URL).
               tab  = הכיתוב על כפתור המעבר לעמוד.
 
-   הפריטים עצמם אינם קישורים — הקישור היחיד בכל כרטיס הוא הכפתור שבראשו.
+   הפריטים עצמם אינם קישורים - הקישור היחיד בכל כרטיס הוא הכפתור שבראשו.
 
-   סדר התחומים כאן הוא סדר התצוגה בדף — כדי לשנות, הזיזו בלוק שלם.
+   סדר התחומים כאן הוא סדר התצוגה בדף - כדי לשנות, הזיזו בלוק שלם.
    ─────────────────────────────────────────────────────────────────────────── */
 var TOPICS = [
   { id: 't1', name: 'תעשייה', tab: 'מעבר לעמוד תעשייה', page: 'תעשייה', items: [
-    { id: 'i1',  title: 'חברות טק והאבים', detail: 'מיפוי חברות טכנולוגיות לפי תחום פעילות, ותק ומספר עובדים, וכן האבים — חללי עבודה משותפים — באשכול.' },
+    { id: 'i1',  title: 'חברות טק והאבים', detail: 'מיפוי חברות טכנולוגיות לפי תחום פעילות, ותק ומספר עובדים, וכן האבים - חללי עבודה משותפים - באשכול.' },
     { id: 'i2',  title: 'מפעלים ונותני שירות', detail: 'מיפוי מפעלים ונותני שירות לתעשייה באשכול, לפי יישוב, ענף פעילות, ותק ועוד.' },
     { id: 'i3',  title: 'דשבורד אזורי תעשייה', detail: 'כלי לתשאול ייעודי קרקע, שייכות וסטטוס (פנוי/בנוי) באזורי התעשייה באשכול.' },
     { id: 'i21', title: 'ייבואני מזון ויצרני מזון מאושרים', detail: 'מיפוי ייבואני מזון ויצרני מזון המאושרים על ידי משרד הבריאות.' }
@@ -180,7 +180,7 @@ var TOPICS = [
   ]},
   { id: 't2', name: 'הון אנושי ופיתוח כלכלי', tab: 'מעבר לעמוד תעשייה / חברה', page: 'תעשיה', items: [
     { id: 'i4', title: 'שכר ממוצע ומועסקים', detail: 'נתוני שכר ממוצע ומספר מועסקים לפי רשות וענף כלכלי.' },
-    { id: 'i5', title: 'סקר טאלנטים — מרכז הידע', detail: 'דוח סקר מרכז הידע על ההון האנושי באזור.' },
+    { id: 'i5', title: 'סקר טאלנטים - מרכז הידע', detail: 'דוח סקר מרכז הידע על ההון האנושי באזור.' },
     { id: 'i6', title: 'קרנות וארגוני פיתוח כלכלי', detail: 'מיפוי קרנות וארגונים העוסקים בפיתוח כלכלי בגליל המזרחי.' }
   ]},
   { id: 't4', name: 'תכנון ותשתיות', tab: 'מעבר לעמוד תכנון', page: 'תכנון', items: [
@@ -205,7 +205,7 @@ var TOPICS = [
 ];
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   מכאן והלאה — לוגיקה. אין צורך לערוך.
+   מכאן והלאה - לוגיקה. אין צורך לערוך.
    ═══════════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -249,7 +249,7 @@ var TOPICS = [
     return out;
   }
 
-  /* פריט תוכן — טקסט בלבד, אינו קישור. */
+  /* פריט תוכן - טקסט בלבד, אינו קישור. */
   function itemHtml(item) {
     return '<div class="item' + (CONFIG.density === 'compact' ? ' dense' : '') + '">' +
       '<div class="item-head">' +
@@ -316,7 +316,7 @@ var TOPICS = [
         '<div class="toolbar"><div class="toolbar-row">' +
           '<div class="search"><span aria-hidden="true">⌕</span>' +
             '<input id="q" type="search" value="' + esc(state.query) + '" ' +
-            'placeholder="חיפוש — נושא, שכבה או סוג נתון" aria-label="חיפוש">' +
+            'placeholder="חיפוש - נושא, שכבה או סוג נתון" aria-label="חיפוש">' +
           '</div>' +
           '<div class="chips" id="chips">' + chips + '</div>' +
           '<div class="count">' + esc(countLabel) + '</div>' +
@@ -351,12 +351,12 @@ var TOPICS = [
 
   /* גיבוי לניווט: אם ה-iframe חסום מלנווט את החלון העליון (sandbox ללא
      allow-top-navigation), target="_top" פשוט לא יעשה דבר. אם הניווט מצליח
-     ה-iframe נהרס והטיימר לא ירוץ כלל — כך שההגעה לכאן פירושה שהניווט נחסם. */
+     ה-iframe נהרס והטיימר לא ירוץ כלל - כך שההגעה לכאן פירושה שהניווט נחסם. */
   document.addEventListener('click', function (e) {
     var a = e.target.closest && e.target.closest('a.page-btn');
     if (!a || a.target !== '_top') return;
     var before = null;
-    try { before = window.top.location.href; } catch (err) { /* cross-origin — נמשיך רגיל */ return; }
+    try { before = window.top.location.href; } catch (err) { /* cross-origin - נמשיך רגיל */ return; }
     setTimeout(function () {
       try {
         if (window.top.location.href === before) window.open(a.href, '_blank', 'noopener');
