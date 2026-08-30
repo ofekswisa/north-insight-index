@@ -320,7 +320,7 @@ var TOPICS = [
       '</div></div></header>' +
       '<div class="wrap">' +
         (CONFIG.showIntro
-          ? '<div class="intro"><h1>אינדקס המערכת</h1>' +
+          ? '<div class="intro"><h1>מפת האתר</h1>' +
             '<p>מערכת North.Insight מרכזת בתוכה מפות, דשבורדים ודוחות במגוון תחומי תוכן. ' +
             'דף זה מהווה מבט על עיקרי הנתונים אשר יושבים במערכת — לחיצה על פריט תעביר אתכם לטאב המתאים.</p>' +
             setup + '</div>'
@@ -328,7 +328,7 @@ var TOPICS = [
         '<div class="toolbar"><div class="toolbar-row">' +
           '<div class="search"><span aria-hidden="true">⌕</span>' +
             '<input id="q" type="search" value="' + esc(state.query) + '" ' +
-            'placeholder="חיפוש באינדקס — נושא, שכבה או סוג נתון" aria-label="חיפוש באינדקס">' +
+            'placeholder="חיפוש — נושא, שכבה או סוג נתון" aria-label="חיפוש">' +
           '</div>' +
           '<div class="chips" id="chips">' + chips + '</div>' +
           '<div class="count">' + esc(countLabel) + '</div>' +
@@ -337,8 +337,8 @@ var TOPICS = [
           ? groups.map(groupHtml).join('')
           : '<div class="empty">לא נמצאו פריטים תואמים. נסו מונח אחר או נקו את הסינון.</div>') +
         '<div class="foot">' +
-          '<div>אשכול גליל מזרחי · אינדקס תכולת המערכת</div>' +
-          '<div>האינדקס מתעדכן עם הוספת שכבות ודשבורדים חדשים</div>' +
+          '<div>אשכול גליל מזרחי · תוכן</div>' +
+          '<div>מפת האתר מתעדכנת עם הוספת שכבות ודשבורדים חדשים</div>' +
         '</div>' +
       '</div>';
 
