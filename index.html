@@ -109,6 +109,14 @@
   }
 
   /* התראת הגדרה - נעלמת מאליה ברגע ש-experienceBase מוגדר */
+  /* הודעה שמופיעה רק אם הדפדפן חסם גם ניווט וגם פתיחת לשונית */
+  .blocked {
+    position: fixed; inset-inline: 0; bottom: 0; z-index: 20;
+    background: #123a5f; color: #ffffff; padding: 12px 20px;
+    font-size: 14px; text-align: center;
+  }
+  .blocked a { color: #7fe3ea; text-decoration: underline; }
+
   .setup {
     background: #fff8e6; border: 1px solid #e8cd8a; color: #7a5a12;
     padding: 10px 16px; font-size: 13.5px; margin: 12px 0 0; line-height: 1.6;
@@ -146,9 +154,12 @@ var CONFIG = {
   pageUrlTemplate: '{base}/page/{page}/',
 
   // 3) יעד הניווט:
-  //    '_top'   = כל האפליקציה עוברת לעמוד (מומלץ בתוך ווידג'ט Embed)
-  //    '_blank' = פתיחה בלשונית חדשה
-  linkTarget: '_top',
+  //    '_blank' = פתיחה בלשונית חדשה — ברירת המחדל, ועובדת גם בתוך ווידג'ט Embed.
+  //    '_top'   = ניווט האפליקציה כולה לעמוד. שימו לב: ArcGIS מוסיף אוטומטית
+  //               את התכונה sandbox ל-iframe של ווידג'ט Embed עבור כל דומיין
+  //               שאינו *.arcgis.com — ולכן '_top' ייחסם כשהדף מתארח ב-Vercel.
+  //               בחרו '_top' רק אם הדף עצמו מתארח תחת *.arcgis.com.
+  linkTarget: '_blank',
 
   // 4) צפיפות התצוגה: 'comfortable' או 'compact'
   density: 'comfortable',
@@ -263,7 +274,8 @@ var TOPICS = [
   function groupHtml(g) {
     var href = urlFor(g.topic);
     var btn = href
-      ? '<a class="page-btn" href="' + esc(href) + '" target="' + esc(CONFIG.linkTarget) + '">' +
+      ? '<a class="page-btn" href="' + esc(href) + '" target="' + esc(CONFIG.linkTarget) + '"' +
+        (CONFIG.linkTarget === '_blank' ? ' rel="noopener noreferrer"' : '') + '>' +
         esc(g.topic.tab) + '<span class="arw" aria-hidden="true">➜</span></a>'
       : '<div class="page-none">' + esc(g.topic.tab) + '</div>';
 
@@ -349,19 +361,35 @@ var TOPICS = [
     });
   }
 
-  /* גיבוי לניווט: אם ה-iframe חסום מלנווט את החלון העליון (sandbox ללא
-     allow-top-navigation), target="_top" פשוט לא יעשה דבר. אם הניווט מצליח
-     ה-iframe נהרס והטיימר לא ירוץ כלל - כך שההגעה לכאן פירושה שהניווט נחסם. */
+  /* גיבוי לניווט, למצב שבו linkTarget='_top' והדפדפן חוסם את הניווט
+     (sandbox ללא allow-top-navigation — מה ש-ArcGIS מוסיף אוטומטית לכל
+     דומיין שאינו *.arcgis.com).
+
+     אי אפשר לזהות חסימה על ידי קריאת top.location — היא זורקת שגיאה כשהדף
+     ממקור אחר, וזו היתה התקלה בגרסה הקודמת. במקום זאת: ניווט שמצליח הורס
+     את המסמך הזה ומפעיל pagehide, ולכן אם הטיימר בכל זאת רץ — הניווט נחסם. */
+  var leaving = false;
+  window.addEventListener('pagehide', function () { leaving = true; });
+  window.addEventListener('beforeunload', function () { leaving = true; });
+
+  function blockedNote(href) {
+    var d = document.getElementById('nav-blocked') || document.body.appendChild(document.createElement('div'));
+    d.id = 'nav-blocked';
+    d.className = 'blocked';
+    d.innerHTML = 'הדפדפן חסם את פתיחת העמוד מתוך החלון המוטמע. ' +
+      '<a href="' + esc(href) + '" target="_blank" rel="noopener noreferrer">פתחו את העמוד בלשונית חדשה</a>';
+  }
+
   document.addEventListener('click', function (e) {
     var a = e.target.closest && e.target.closest('a.page-btn');
     if (!a || a.target !== '_top') return;
-    var before = null;
-    try { before = window.top.location.href; } catch (err) { /* cross-origin - נמשיך רגיל */ return; }
+    var href = a.href;
     setTimeout(function () {
-      try {
-        if (window.top.location.href === before) window.open(a.href, '_blank', 'noopener');
-      } catch (err) {}
-    }, 1000);
+      if (leaving || document.visibilityState === 'hidden') return;   // הניווט הצליח
+      var w = null;
+      try { w = window.open(href, '_blank', 'noopener'); } catch (err) {}
+      if (!w) blockedNote(href);
+    }, 900);
   }, true);
 
   render();
